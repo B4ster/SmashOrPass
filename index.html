@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="pl-PL">
+<head>
+    <meta charset="UTF-8">
+    <meta name="keyword" content="Pokemon" />
+    <meta name="description" content= "Smash or Pass" />
+	<meta name="authot" content="Bast3r" />
+    <meta name="generator" content="VScode" />
+	<meta name="robots" content="all" />
+    <link rel="stylesheet" type="text/css" href="main.css">
+    <link rel="icon" type="image/x-icon" href="src/PikachuIcon.png">
+    <title>Smash or Pass</title>
+    <script>
+        let counter=1;
+        async function getPokemon() {
+            try {
+                const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${counter}`);
+                if (!response.ok) {
+                    counter=1;
+                    getPokemon();
+                    return;
+                }
+                document.querySelector('.pokemon_section .counter').innerHTML = `<p>${counter} / 1025</p>`;
+                const data = await response.json();
+                const imgUrl = data.sprites.other['official-artwork'].front_default;
+                document.querySelector('.pokemon .image').innerHTML = `<img src="${imgUrl}" alt="${data.name}">`;
+                document.querySelector('.pokemon .name').innerHTML = `${data.name}`;
+                document.querySelector('.pokemon .weight').innerHTML = `${(data.weight/10).toFixed(1)} kg`;
+                const types = data.types.map(t => t.type.name).join(' , ');
+                document.querySelector('.pokemon .type').innerHTML = `TYPES:<br>${types}`;
+            }
+            catch (error) {
+                console.error("Error:",error);
+                document.querySelector('.pokemon .name').innerHTML = 'Error!';
+            }
+        }
+        let smash=0;
+        let pass=0;
+        function nextPokemonSmash() {
+            if (counter>=1025) {
+                const smashBtn = document.querySelector('.smash');
+                const passBtn = document.querySelector('.pass');
+                smashBtn.onclick = null;
+                passBtn.onclick = null;
+            }
+            document.querySelector('.pokemon_section .counter').innerHTML = `${counter}`;
+            smash++;
+            document.querySelector('.choose .smash_counter').innerHTML = `${smash}`;
+            counter++;
+            getPokemon();
+        }
+        function nextPokemonPass() {
+            if (counter>=1025) {
+                const smashBtn = document.querySelector('.smash');
+                const passBtn = document.querySelector('.pass');
+                smashBtn.onclick = null;
+                passBtn.onclick = null;
+            }
+            document.querySelector('.pokemon_section .counter').innerHTML = `${counter}`;
+            pass++;
+            document.querySelector('.choose .pass_counter').innerHTML = `${pass}`;
+            counter++;
+            getPokemon();
+        }
+        window.onload = function() {
+            getPokemon();
+        };
+    </script>
+</head>
+<body>
+    <section class="container">
+        <header>
+            <h1 class="sm">SMASH</h1>
+            <h1 class="or">OR</h1>
+            <h1 class="pa">PASS</h1>
+        </header>
+        <main>
+            <section class="pokemon_section">
+                <section class="counter"></section>
+                <section class="pokemon">
+                    <section class="image"></section>
+                    <section class="name"></section>
+                    <section class="weight"></section>
+                    <section class="type"></section>
+                </section>
+            </section>
+            <section class="choose">
+                <button class="smash" onclick="nextPokemonSmash()"><b>SMASH</b></button>
+                <button class="pass" onclick="nextPokemonPass()"><b>PASS</b></button>
+                <section class="smash_counter">0</section>
+                <section class="pass_counter">0</section>
+            </section>
+        </main>
+    </section>
+    <footer>
+        <a class="kofi" href="https://ko-fi.com/bast3r" target="_blank" style="text-decoration:none"><p>Support me!</p><img src="src/istockphoto-heart.png"></a>
+        <a href="https://x.com/Baster3k" target="_blank"><img class="socials" src="src/twitter_logo.png"></a>
+        <abbr title="Bast3r"><img class="socials" src="src/discord_logo.png"></abbr>
+    </footer>
+</body>
+</html>
